@@ -1,0 +1,30 @@
+services:
+  postgres:
+    container_name: postgres-sql-tot
+    image: postgres
+    environment:
+      PGDATA: /var/lib/postgresql/data
+    env_file:
+      - .env
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - 5422:5432
+    networks:
+      - the-old-tree
+    restart: unless-stopped
+
+  mail-dev:
+    container_name: mail-dev-tot
+    image: maildev/maildev
+    ports:
+      - 1080:1080
+      - 1025:1025
+
+networks:
+  the-old-tree:
+    driver: bridge
+
+volumes:
+  postgres:
+    driver: local
