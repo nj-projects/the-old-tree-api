@@ -8,6 +8,8 @@ import me.nolanjames.theoldtreeapi.product.dto.ProductRequest;
 import me.nolanjames.theoldtreeapi.product.dto.ProductResponse;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+
 @Service
 @RequiredArgsConstructor
 public class ProductMapper {
@@ -23,14 +25,18 @@ public class ProductMapper {
                 .isActive(productRequest.isActive())
                 .heroImage(toImage(productRequest.heroImage()))
                 .images(
-                        productRequest.images().stream()
+                        productRequest.images() != null
+                                ? productRequest.images().stream()
                                 .map(this::toImage)
                                 .toList()
+                                : Collections.emptyList()
                 )
                 .categories(
-                        productRequest.categories().stream()
+                        productRequest.images() != null
+                                ? productRequest.categories().stream()
                                 .map(categoryMapper::toCategory)
                                 .toList()
+                                : Collections.emptyList()
                 )
                 .build();
     }

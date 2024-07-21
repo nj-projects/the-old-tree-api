@@ -9,6 +9,8 @@ import me.nolanjames.theoldtreeapi.shared.BaseEntity;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.ALL;
+
 @Entity
 @Getter
 @Setter
@@ -27,12 +29,12 @@ public class Product extends BaseEntity {
     private int discountPercentage;
     private String publicId;
 
-    @OneToOne
+    @OneToOne(cascade = ALL)
     private Image heroImage;
 
-    @OneToMany()
+    @OneToMany(cascade = ALL)
     private List<Image> images;
 
-    @OneToMany()
+    @OneToMany(cascade = ALL)
     private List<Category> categories;
 }

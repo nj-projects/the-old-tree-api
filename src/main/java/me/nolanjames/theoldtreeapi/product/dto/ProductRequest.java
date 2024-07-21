@@ -17,13 +17,10 @@ public record ProductRequest(
         @NotNull
         String description,
 
-        @NotEmpty
-        @NotNull
         @PositiveOrZero
         BigDecimal price,
 
-        @NotEmpty
-        @NotNull
+        @PositiveOrZero
         int stock,
 
         @NotNull
