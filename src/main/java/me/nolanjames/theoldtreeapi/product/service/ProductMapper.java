@@ -1,7 +1,9 @@
-package me.nolanjames.theoldtreeapi.product;
+package me.nolanjames.theoldtreeapi.product.service;
 
 import lombok.RequiredArgsConstructor;
-import me.nolanjames.theoldtreeapi.category.CategoryMapper;
+import me.nolanjames.theoldtreeapi.category.service.CategoryMapper;
+import me.nolanjames.theoldtreeapi.product.Image;
+import me.nolanjames.theoldtreeapi.product.Product;
 import me.nolanjames.theoldtreeapi.product.dto.ImageRequest;
 import me.nolanjames.theoldtreeapi.product.dto.ImageResponse;
 import me.nolanjames.theoldtreeapi.product.dto.ProductRequest;
@@ -31,13 +33,14 @@ public class ProductMapper {
                                 .toList()
                                 : Collections.emptyList()
                 )
-                .categories(
-                        productRequest.images() != null
-                                ? productRequest.categories().stream()
-                                .map(categoryMapper::toCategory)
-                                .toList()
-                                : Collections.emptyList()
-                )
+//                .categories(
+//                        productRequest.categories() != null
+//                                ? productRequest.categories().stream()
+//                                .peek(categoryRequest -> System.out.println(categoryRequest.name()))
+//                                .map(categoryMapper::toCategory)
+//                                .collect(Collectors.toSet())
+//                                : Collections.emptySet()
+//                )
                 .build();
     }
 
