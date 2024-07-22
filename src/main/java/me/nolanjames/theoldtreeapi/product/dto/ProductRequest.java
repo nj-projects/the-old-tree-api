@@ -1,5 +1,6 @@
 package me.nolanjames.theoldtreeapi.product.dto;
 
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -18,9 +19,12 @@ public record ProductRequest(
         String description,
 
         @PositiveOrZero
+        @NotNull
+        @DecimalMin(value = "0.00", inclusive = false)
         BigDecimal price,
 
         @PositiveOrZero
+        @NotNull
         int stock,
 
         @NotNull
