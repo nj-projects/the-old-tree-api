@@ -1,0 +1,25 @@
+package me.nolanjames.theoldtreeapi.category.service;
+
+import me.nolanjames.theoldtreeapi.category.Category;
+import me.nolanjames.theoldtreeapi.category.dto.CategoryRequest;
+import me.nolanjames.theoldtreeapi.category.dto.CategoryResponse;
+import org.springframework.stereotype.Service;
+
+@Service
+public class CategoryMapper {
+
+    public Category toCategory(CategoryRequest categoryRequest) {
+        return Category.builder()
+                .name(categoryRequest.name())
+                .description(categoryRequest.description())
+                .build();
+    }
+
+    public CategoryResponse toCategoryResponse(Category category) {
+        return new CategoryResponse(
+                category.getName(),
+                category.getDescription(),
+                category.getPublicId()
+        );
+    }
+}
