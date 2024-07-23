@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,12 +36,13 @@ class CategoryRepositoryTest {
     @DisplayName("List all categories")
     @Test
     void givenCategoryList_whenFindAll_thenReturnCategoryList() {
+
         Category category = Category.builder()
-                .name("Toys")
+                .name("Toys_Test")
                 .description("Toys Description")
                 .build();
         Category category2 = Category.builder()
-                .name("Furniture")
+                .name("Furniture_Test")
                 .description("Furniture Description")
                 .build();
 
@@ -51,17 +53,60 @@ class CategoryRepositoryTest {
 
         assertThat(categoryList).isNotNull();
         assertThat(categoryList.size()).isEqualTo(2);
+
+
+    }
+
+
+    @Test
+    void givenExistingCategoryPublicId_whenFindByPublicId_thenReturnCategory() {
+        String randomUUID = UUID.randomUUID().toString();
+        Category category = Category.builder()
+                .name("Toys")
+                .description("Toys Description")
+                .publicId(randomUUID)
+                .build();
+
+        categoryRepository.save(category);
+
+        Category categoryByPublicId = categoryRepository.findByPublicId(category.getPublicId()).get();
+
+        assertThat(categoryByPublicId).isNotNull();
+        assertThat(categoryByPublicId.getPublicId()).isEqualTo(category.getPublicId());
+
     }
 
     @Test
-    void findByPublicId() {
+    void givenExistingCategoryName_whenFindByName_thenReturnCategory() {
+        String randomUUID = UUID.randomUUID().toString();
+        Category category = Category.builder()
+                .name("Toys")
+                .description("Toys Description")
+                .publicId(randomUUID)
+                .build();
+
+        categoryRepository.save(category);
+
+        Category categoryByName = categoryRepository.findByName(category.getName()).get();
+
+        assertThat(categoryByName).isNotNull();
+        assertThat(categoryByName.getName()).isEqualTo(category.getName());
     }
 
     @Test
-    void findByName() {
-    }
+    void givenExistingCategoryName_whenCategoryExistsByName_thenReturnTrue() {
+        String randomUUID = UUID.randomUUID().toString();
+        Category category = Category.builder()
+                .name("Toys")
+                .description("Toys Description")
+                .publicId(randomUUID)
+                .build();
 
-    @Test
-    void categoryExistsByName() {
+        categoryRepository.save(category);
+
+        boolean exists = categoryRepository.categoryExistsByName(category.getName());
+
+        assertThat(exists).isTrue();
+
     }
 }

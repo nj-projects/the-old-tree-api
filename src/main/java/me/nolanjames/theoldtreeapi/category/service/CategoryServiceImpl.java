@@ -42,7 +42,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryResponse findByPublicId(String publicId) {
         return categoryRepository.findByPublicId(publicId)
                 .map(categoryMapper::toCategoryResponse)
-                .orElseThrow(() -> new EntityNotFoundException("Category not found with ID: " + publicId));
+                .orElseThrow(() -> new EntityNotFoundException("Category not found with Public ID: " + publicId));
     }
 
     @Override
