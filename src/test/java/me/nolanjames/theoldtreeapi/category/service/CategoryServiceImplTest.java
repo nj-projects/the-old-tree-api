@@ -1,5 +1,6 @@
 package me.nolanjames.theoldtreeapi.category.service;
 
+import jakarta.persistence.EntityExistsException;
 import me.nolanjames.theoldtreeapi.category.Category;
 import me.nolanjames.theoldtreeapi.category.CategoryRepository;
 import me.nolanjames.theoldtreeapi.category.dto.CategoryRequest;
@@ -12,7 +13,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
@@ -67,6 +70,14 @@ class CategoryServiceImplTest {
     }
 
     @Test
+    void givenValidExistingCategoryRequest_whenCreateCategory_thenReturnError() {
+        given(categoryRepository.categoryExistsByName(request.name()))
+                .willReturn(true);
+
+        assertThatThrownBy(() -> categoryService.createCategory(request)).isInstanceOf(EntityExistsException.class);
+    }
+
+    @Test
     void givenValidPublicId_whenFindByPublicId_thenReturnCategoryResponse() {
         when(categoryMapper.toCategory(request)).thenReturn(category);
         when(categoryService.createCategory(request)).thenReturn(response);
@@ -80,6 +91,14 @@ class CategoryServiceImplTest {
     }
 
     @Test
+    void givenInvalidPublicId_whenFindByPublicId_thenReturnError() {
+        given(categoryRepository.findByPublicId("333"))
+                .willThrow(EntityExistsException.class);
+
+        assertThatThrownBy(() -> categoryService.findByPublicId("333")).isInstanceOf(EntityExistsException.class);
+    }
+
+    @Test
     void givenValidCategoryName_whenFindByName_thenReturnCategoryResponse() {
         when(categoryMapper.toCategory(request)).thenReturn(category);
         when(categoryService.createCategory(request)).thenReturn(response);
@@ -90,6 +109,14 @@ class CategoryServiceImplTest {
 
         assertNotNull(byName);
         assertEquals(byName.name(), response.name());
+    }
+
+    @Test
+    void givenInvalidCategoryName_whenFindByName_thenReturnError() {
+        given(categoryRepository.findByName("333"))
+                .willThrow(EntityExistsException.class);
+
+        assertThatThrownBy(() -> categoryService.findByName("333")).isInstanceOf(EntityExistsException.class);
     }
 
     @Test
@@ -108,8 +135,6 @@ class CategoryServiceImplTest {
 
     @Test
     void givenValidCategoryName_whenCategoryExistsByName_thenTrue() {
-        when(categoryMapper.toCategory(request)).thenReturn(category);
-        when(categoryService.createCategory(request)).thenReturn(response);
         given(categoryRepository.categoryExistsByName(request.name()))
                 .willReturn(true);
 
@@ -119,10 +144,26 @@ class CategoryServiceImplTest {
     }
 
     @Test
-    void getCategoryEntityByName() {
+    void givenValidCategoryName_whenGetCategoryEntityByName_thenCategory() {
+        given(categoryRepository.findByName(request.name()))
+                .willReturn(Optional.of(category));
+
+        Category categoryEntityByName = categoryService.getCategoryEntityByName(request.name());
+
+        assertNotNull(categoryEntityByName);
+        assertEquals(categoryEntityByName.getName(), response.name());
     }
 
     @Test
     void existingCategories() {
+
+        given(categoryRepository.categoryExistsByName(request.name()))
+                .willReturn(true);
+        given(categoryRepository.findByName(request.name()))
+                .willReturn(Optional.of(category));
+
+        Set<Category> categories = categoryService.existingCategories(List.of(request));
+
+        assertNotNull(categories);
     }
 }

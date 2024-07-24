@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import me.nolanjames.theoldtreeapi.category.dto.CategoryRequest;
 import me.nolanjames.theoldtreeapi.category.dto.CategoryResponse;
 import me.nolanjames.theoldtreeapi.category.service.CategoryService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class CategoryController {
 
     @PostMapping()
     public ResponseEntity<CategoryResponse> createCategory(@Valid @RequestBody CategoryRequest categoryRequest) {
-        return ResponseEntity.ok(categoryService.createCategory(categoryRequest));
+        return new ResponseEntity<>(categoryService.createCategory(categoryRequest), HttpStatus.CREATED);
     }
 
     @GetMapping()
