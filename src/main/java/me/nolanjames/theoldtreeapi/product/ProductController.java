@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import me.nolanjames.theoldtreeapi.product.dto.ProductRequest;
 import me.nolanjames.theoldtreeapi.product.dto.ProductResponse;
 import me.nolanjames.theoldtreeapi.product.service.ProductService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductRequest productRequest) {
-        return ResponseEntity.ok(productService.createProduct(productRequest));
+        return new ResponseEntity<>(productService.createProduct(productRequest), HttpStatus.CREATED);
     }
 
     @GetMapping

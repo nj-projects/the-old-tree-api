@@ -28,8 +28,8 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.listCategories());
     }
 
-    @GetMapping({"name"})
-    public ResponseEntity<CategoryResponse> getCategoryByName(@RequestParam(name = "name") String name) {
+    @GetMapping("/{name}")
+    public ResponseEntity<CategoryResponse> getCategoryByName(@PathVariable(name = "name") String name) {
         return ResponseEntity.ok(categoryService.findByName(name));
     }
 }

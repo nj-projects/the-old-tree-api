@@ -22,6 +22,7 @@ import java.util.List;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -46,12 +47,12 @@ class CategoryControllerTest {
         String publicId = "123456";
 
         request = new CategoryRequest(
-                "Service Test Name",
+                "Toys",
                 "Service Test Description"
         );
 
         response = new CategoryResponse(
-                "Service Test Name",
+                "Toys",
                 "Service Test Description",
                 publicId
         );
@@ -75,17 +76,21 @@ class CategoryControllerTest {
 
         mvc.perform(get("/category").with(csrf()).contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
                         .content(json).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+                .andDo(print())
                 .andExpect(jsonPath("$.size()").value(1));
     }
 
     @Test
-    void getCategoryByName() {
-        Mockito.when(categoryService.findByName(ArgumentMatchers.matches(request.name()))).thenReturn(response);
+    void getCategoryByName() throws Exception {
+        Mockito.when(categoryService.findByName("Toys")).thenReturn(response);
 
-//        mvc.perform(get("/category").param("name", request.name()).with(csrf()).contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8"))
-//                .andDo(print());
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.name").value(request.name()));
+        mvc.perform(get("/category/{name}", request.name())
+                        .with(csrf()).contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value(request.name()));
 
     }
 }
